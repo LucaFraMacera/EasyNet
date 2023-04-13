@@ -1,0 +1,46 @@
+*::selection{
+  color:rgb(150, 252, 201);
+  background-color: rgba(0, 255, 127,0.1);
+}
+body{
+    display:flex;
+    flex-direction: column;
+    background-image:url("../Net.jpg");
+    color:springgreen;
+    text-shadow: 2px 0 rgb(101, 2, 182),-2px 1px rgb(182, 2, 2);
+    font-weight: bold;
+    font-style: oblique;
+    font-family: monospace;
+}
+
+h1{
+  text-align: center;
+  font-size: 50px;
+  font-weight: bold;
+  font-style: oblique;
+  font-family: monospace;
+}
+input[type="number"]{
+  margin-left: 5px;
+  border-radius: 20px;
+  width:50%;
+  text-align: right;
+  background-color: transparent;
+  color:springgreen;
+  font-weight: bold;
+  font-size: 20px;  
+  border:3px solid springgreen;
+}
+fieldset{
+  border-radius: 15px;
+  border-color: springgreen;
+  box-shadow:-2px 2px 5px springgreen,0 0 5px springgreen ;
+}
+fieldset label{
+  font-size: 18px;
+  font-weight: bold;
+}
+fieldset legend{
+  font-size: 25px;
+  font-weight: bold;
+}

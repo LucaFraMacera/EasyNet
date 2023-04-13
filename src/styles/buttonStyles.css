@@ -1,0 +1,59 @@
+.functional{
+    --border: 2px;    /* the border width */
+    --slant: 0.7em;   /* control the slanted corners */
+    --color:springgreen; /* the color */
+    overflow: wrap;
+    font-size: 20px;
+    padding: 0.4em 1.2em;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--color);
+    background: 
+       linear-gradient(to bottom left,var(--color)  50%,#0000 50.1%) top right,
+       linear-gradient(to top   right,var(--color)  50%,#0000 50.1%) bottom left;
+    background-size: calc(var(--slant) + 1.3*var(--border)) calc(var(--slant) + 1.3*var(--border));
+    background-repeat: no-repeat;
+    box-shadow:
+      0 0 0 200px inset var(--s,#0000),
+      0 0 0 var(--border) inset var(--color);
+    clip-path: 
+        polygon(0 0, calc(100% - var(--slant)) 0, 100% var(--slant),
+                100% 100%, var(--slant) 100%,0 calc(100% - var(--slant))
+               );
+    transition: color var(--t,0.3s), background-size 0.3s;
+  }
+.functional:focus-visible {
+    outline-offset: calc(-1*var(--border));
+    outline: var(--border) solid #000c;
+    clip-path: none;
+    background-size: 0 0;
+  }
+  .functional:hover,
+  .functional:active{
+    background-size: 100% 100%;
+    color:rgb(1, 10, 1);
+    --t: 0.2s 0.1s;
+  }
+  .functional:active {
+    --s: #0005;
+    transition: none;
+  }
+.switch{
+  --bgColor:black;
+  --fontColor:springgreen;
+  border-radius: 20px;
+  box-shadow:2px 2px 5px springgreen,-2px -2px 5px springgreen;
+  background-color: var(--bgColor);
+  color: var(--fontColor);
+  font-size: 16px;
+  font-weight: bold;
+}
+.switch:hover{
+  cursor: pointer;
+  color:var(--bgColor);
+  background-color:var(--fontColor);
+}
+#editEdge{
+  display: none;
+}

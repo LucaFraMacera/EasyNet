@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyNET</title>
+  </head>
+  <body>
+    <h1>Crea Il Tuo Nuovo Grafo</h1>
+    <div id="app">
+      <fieldset id="functions"><legend>Funzionalità</legend>
+        <button id="addNode" class="functional">Crea Nodo</button>
+        <fieldset id="addEdgeField">
+          <legend>Crea Nuovo Arco</legend>
+          <div>
+            <label id="weight" style="display: none;">Peso:<input type="number" id="edgeWeight" value="0"/></label>          
+          </div>    
+          <button id="addEdge" class="functional">Crea Arco</button>
+          <button id="editEdge" class="functional">Modifica</button>
+       </fieldset>
+       <button id="delete" class="functional">Cancella</button>
+       <button id="reset" class="functional">Resetta</button>
+      </fieldset>
+      <div id="netArea">
+        <label id="description">Aggiungi nodi e archi per creare il Grafo</label>
+        <div id="network"></div>
+      </div>
+      <fieldset id="options"><legend>Opzioni</legend>
+        <div>
+          <label>Orientato: </label><button id="netType" class="switch">NO</button>
+          <label>Pesato: </label><button id="isWeighted" class="switch">NO</button>
+        </div>
+      </fieldset>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
