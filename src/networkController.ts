@@ -13,11 +13,11 @@ let edgeModeEdit = false
 let nodeIDs=1
 const nodes = new DataSet([]);
 const edges = new DataSet([]);
-const container = document.querySelector("#network");
-const deleteButton = document.querySelector("#delete");
-const edgeButton = document.querySelector("#addEdge");
-const editEdgeButton = document.querySelector("#editEdge");
-const edgeWeight = document.querySelector("#edgeWeight");
+const container = document.querySelector("#network") as HTMLDivElement;
+const deleteButton = document.querySelector("#delete") as HTMLButtonElement;
+const edgeButton = document.querySelector("#addEdge")as HTMLButtonElement;
+const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
+const edgeWeight = document.querySelector("#edgeWeight") as HTMLInputElement;
 function resetModes(){
   setDeleteMode(false)
   addEdgeMode(false)
@@ -29,7 +29,7 @@ export const MODES={
   addEdge:"addE",
   editEdge:"editE"
 }
-export function setMode(value){
+export function setMode(value:String){
   switch(value){
     case MODES.delete:
       editEdgeMode(false)
@@ -62,7 +62,7 @@ export function resetNetwork(){
     edges.clear()
     network.redraw()
 }
-function editEdgeMode(value){
+function editEdgeMode(value:boolean){
   if(value && !edgeModeEdit){
     edgeModeEdit=true
     editEdgeButton.innerHTML="Annulla"
@@ -78,7 +78,7 @@ function editEdgeMode(value){
     network.unselectAll()
   }
 }
-function setDeleteMode(value){
+function setDeleteMode(value:boolean){
   if(value && !deleteMode){
     deleteMode=true
     descriptionsController.setDescription(descriptionsController.descriptions.DELETE)
@@ -90,7 +90,7 @@ function setDeleteMode(value){
     deleteButton.innerHTML= "Cancella"
   }
 }
-function addEdgeMode(value){
+function addEdgeMode(value:boolean){
   if(value && !edgeMode){
     edgeMode=true
     descriptionsController.setDescription(descriptionsController.descriptions.ADD_EDGE)
@@ -214,13 +214,13 @@ var options = {
   physics:{
     enabled:false
   }
-};
+}as any;
 var network = new Network(container, data, options);
-export function setNetworkDirection(value){
+export function setNetworkDirection(value:boolean){
   options.edges.arrows.to=value
   network.setOptions(options)
 }
-export function setWeighted(value){
+export function setWeighted(value:boolean){
   if(value){
     options.edges.font.size=20
   }else{

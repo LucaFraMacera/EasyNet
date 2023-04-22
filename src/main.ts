@@ -2,14 +2,14 @@ import * as networkController from "./networkController";
 import "./styles/buttonStyles.css"
 import "./styles/fieldsStyle.css"
 import "./styles/generalStyle.css"
-const addButton = document.querySelector("#addNode");
-const edgeButton = document.querySelector("#addEdge");
-const deleteButton = document.querySelector("#delete");
-const resetButton = document.querySelector("#reset");
-const editEdgeButton = document.querySelector("#editEdge");
-const enableDirectionButton = document.querySelector("#netType");
-const enableWeightButton = document.querySelector("#isWeighted");
-const weightSection = document.querySelector("#weight")
+const addButton = document.querySelector("#addNode")as HTMLButtonElement;
+const edgeButton = document.querySelector("#addEdge")as HTMLButtonElement;
+const deleteButton = document.querySelector("#delete")as HTMLButtonElement;
+const resetButton = document.querySelector("#reset")as HTMLButtonElement;
+const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
+const enableDirectionButton = document.querySelector("#netType") as HTMLButtonElement;
+const enableWeightButton = document.querySelector("#isWeighted")as HTMLButtonElement;
+const weightSection = document.querySelector("#weight")as HTMLLabelElement
 
 enableDirectionButton.addEventListener("click", ()=>{
   let bgColor = enableDirectionButton.style.getPropertyValue("--bgColor");
@@ -49,14 +49,14 @@ enableWeightButton.addEventListener("click",()=>{
   enableWeightButton.style.setProperty("--fontColor",fontColor)
 })
 addButton.addEventListener("click",()=>{
-  networkController.setMode()
+  networkController.setMode("none")
   networkController.addVertex()
 })
 edgeButton.addEventListener("click",()=>{
   networkController.setMode(networkController.MODES.addEdge)
 })
 resetButton.addEventListener("click",()=>{
-  networkController.setMode()
+  networkController.setMode("none")
   networkController.resetNetwork()
 })
 deleteButton.addEventListener("click",()=>{

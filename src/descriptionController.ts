@@ -1,4 +1,4 @@
-const descriptionZone = document.querySelector("#description");
+const descriptionZone = document.querySelector("#description") as HTMLLabelElement;
 const DEFAULT = "Aggiungi nodi e archi"
 const DELETE_DESCR =  "Clicca su un nodo o su un arco per eliminarlo. "+
                         "Per annullare l'operazione clicca il bottone 'Annulla'"
@@ -11,9 +11,9 @@ export const descriptions = {
     EDIT_EDGE:"EDITE"
 }
 export function setDefaultDescription(){
-    descriptionZone.innertText = DEFAULT
+    descriptionZone.innerText = DEFAULT
 }
-export function setDescription(value){
+export function setDescription(value:String){
     switch(value){
         default:
             descriptionZone.textContent = DEFAULT
