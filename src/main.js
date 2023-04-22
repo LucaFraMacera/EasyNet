@@ -1,4 +1,3 @@
-import * as g from "../node_modules/Graphs/graphsExport"
 import * as networkController from "./networkController";
 import "./styles/buttonStyles.css"
 import "./styles/fieldsStyle.css"
@@ -11,6 +10,7 @@ const editEdgeButton = document.querySelector("#editEdge");
 const enableDirectionButton = document.querySelector("#netType");
 const enableWeightButton = document.querySelector("#isWeighted");
 const weightSection = document.querySelector("#weight")
+
 enableDirectionButton.addEventListener("click", ()=>{
   let bgColor = enableDirectionButton.style.getPropertyValue("--bgColor");
   let fontColor = enableDirectionButton.style.getPropertyValue("--fontColor");
@@ -28,6 +28,7 @@ enableDirectionButton.addEventListener("click", ()=>{
   enableDirectionButton.style.setProperty("--bgColor",bgColor)
   enableDirectionButton.style.setProperty("--fontColor",fontColor)
 })
+
 enableWeightButton.addEventListener("click",()=>{
   let bgColor = enableWeightButton.style.getPropertyValue("--bgColor");
   let fontColor = enableWeightButton.style.getPropertyValue("--fontColor");

@@ -9,7 +9,7 @@
 }
 #functions{
     backdrop-filter: blur(20px);
-    width:30%;
+    width:15%;
     display: flex;
     flex-direction: column;
     align-content: space-between;

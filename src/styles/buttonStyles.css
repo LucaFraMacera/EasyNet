@@ -3,7 +3,7 @@
     --slant: 0.7em;   /* control the slanted corners */
     --color:springgreen; /* the color */
     overflow: wrap;
-    font-size: 20px;
+    font-size: 18px;
     padding: 0.4em 1.2em;
     border: none;
     cursor: pointer;
