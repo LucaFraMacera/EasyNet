@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@tyriar/fibonacci-heap": "^2.0.9",
-    "js-priority-queue": "^0.1.5",
     "vis-network": "^9.1.6"
   }
 }
