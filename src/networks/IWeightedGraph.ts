@@ -1,4 +1,4 @@
-interface IWeightedGraph<Vertex>{
+export interface IWeightedGraph<Vertex>{
     addVertex(vertex: Vertex):void
     addVertexes(...vertexes: Vertex[]):void
     addEdge(from:Vertex,to:Vertex,weight:Number):void

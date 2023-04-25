@@ -1,15 +1,15 @@
 import {DataSet} from "vis-data"
 import {Network} from "vis-network/peer"
 import * as descriptionsController from "./descriptionController"
-const CONSTANTS={
-    nodeColor:"rgb(10,10,10)",
-    primaryColor:"springgreen",
-    secondaryColor:"rgb(7, 163, 140)",
-    edgeWeightColor:"rgb(0,200,50)"
-}
+import * as outputNetworkController from "./outputNetsController"
+import "./styles/networkStyle"
+import { CONSTANTS } from "./styles/networkStyle"
+import { Data } from "vis-network"
 let deleteMode = false
 let edgeMode = false
 let edgeModeEdit = false
+let isDirected = false
+let isWeighted = false
 let nodeIDs=1
 const nodes = new DataSet([]);
 const edges = new DataSet([]);
@@ -18,6 +18,9 @@ const deleteButton = document.querySelector("#delete") as HTMLButtonElement;
 const edgeButton = document.querySelector("#addEdge")as HTMLButtonElement;
 const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
 const edgeWeight = document.querySelector("#edgeWeight") as HTMLInputElement;
+const dijkstra = document.querySelector("#dijkstra")! as HTMLButtonElement
+const prim = document.querySelector("#prim")! as HTMLButtonElement
+const kruskal = document.querySelector("#kruskal")! as HTMLButtonElement
 function resetModes(){
   setDeleteMode(false)
   addEdgeMode(false)
@@ -113,7 +116,7 @@ const data = {
   nodes: nodes,
   edges: edges
 };
-var options = {
+const options = {
   interaction: { 
     hover: true,
     selectConnectedEdges:false
@@ -139,8 +142,8 @@ var options = {
     },
     editEdge:function(edgeData,callback){
       if(edgeData.from.length >=10 || edgeData.to.length>=10){
-         edgeData.from = edgeData.to = (edgeData.from.length >= edgeData.to.length) ? edgeData.from : edgeData.to
-        callback(edgeData)
+         alert("Non si possono creare cappi")
+         callback()
       }else{
         let weight = edgeWeight.value
         edgeData.label = weight
@@ -216,15 +219,26 @@ var options = {
   }
 }as any;
 var network = new Network(container, data, options);
+
 export function setNetworkDirection(value:boolean){
+  isDirected=value
   options.edges.arrows.to=value
   network.setOptions(options)
 }
 export function setWeighted(value:boolean){
+  isWeighted=value
   if(value){
     options.edges.font.size=20
   }else{
     options.edges.font.size=0
   }
   network.setOptions(options)
+}
+
+dijkstra.addEventListener("click",()=>{
+  console.log(outputNetworkController.doDijkstra("V1","V4"))
+
+})
+export function getNetworkData():{nodes:DataSet<any>,edges:DataSet<any>,options:any}{
+  return {nodes,edges,options}
 }

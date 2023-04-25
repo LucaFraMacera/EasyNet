@@ -1,4 +1,4 @@
-interface IGraph<Vertex>{
+export interface IGraph<Vertex>{
     addVertex(vertex: Vertex):void
     addVertexes(...vertexes: Vertex[]):void
     addEdge(from:Vertex,to:Vertex):void

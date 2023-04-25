@@ -1,11 +1,12 @@
 #options{
     backdrop-filter: blur(20px);
-    width:15%;
+    width:80%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-content: space-between;
     gap:10px;
-    box-shadow:2px 2px 5px springgreen,0 0 5px springgreen ;
+    box-shadow:0px 0px 0px springgreen,0 0 5px springgreen ;
+    margin-bottom:15px;
 }
 #functions{
     backdrop-filter: blur(20px);
@@ -21,19 +22,25 @@
     flex-direction: row;
     gap:15px
 }
-#description{
+.description{
   text-shadow:none;
   font-size: 16px;
   width: 100%;
   text-align: justify;
 }
 #netArea{
-  width: 75%;
+  width: 53%;
   display:flex;
   flex-direction: column;
   gap:5px;
 }
-#network{
+#outputArea{
+  width: 32%;
+  display:flex;
+  flex-direction: column;
+  gap:5px;
+}
+.network{
     border-radius: 10px;
     backdrop-filter: blur(20px);
     height:500px;
