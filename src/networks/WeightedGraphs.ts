@@ -263,16 +263,24 @@ export class UndirectedWeightedGraph<Vertex> extends DirectedWeightedGraph<Verte
             from:Vertex,
             to:Vertex
         }
+        let mappedEdges = new Map<Vertex,Set<Vertex>>
         let queue = new FibonacciHeap<number,Edge>((a,b)=>{return a.key-b.key})
+        for(const v of this.adiacencyList.keys())
+            mappedEdges.set(v,new Set<Vertex>())
         for(const v of this.adiacencyList.keys()){
             for(const entries of this.adiacencyList.get(v)!.entries()){
-                let edgeInfo = {
-                    from: v,
-                    to:entries[0]
-                }
-                queue.insert(entries[1],edgeInfo)
+                if(!mappedEdges.get(v).has(entries[0])){
+                    mappedEdges.get(v).add(entries[0])
+                    mappedEdges.get(entries[0]).add(v)
+                    let edgeInfo = {
+                        from: v,
+                        to:entries[0]
+                    }
+                    queue.insert(entries[1],edgeInfo)
+                }      
             }
         }
+        console.log(mappedEdges)
         return queue
     }/**
      * 
@@ -323,16 +331,24 @@ export class UndirectedWeightedGraph<Vertex> extends DirectedWeightedGraph<Verte
     kruskal():UndirectedWeightedGraph<Vertex>{
         let result = new UndirectedWeightedGraph<Vertex>()
         let edges = this.getAllEdges()
-        while(this.adiacencyList.size-edges.size() !== 1){
+        let numberOfEdges = 0
+        if(!this.isConnected())
+            return result
+        while(!edges.isEmpty()){
             let edgeInfo = edges.extractMinimum()
             let from = edgeInfo!.value!.from
             let to = edgeInfo!.value!.to
+            console.log(from,to,numberOfEdges)
+            if(result.hasVertex(from) && result.hasVertex(to))
+                continue
             if(!result.hasVertex(from))
                 result.addVertex(from)
             if(!result.hasVertex(to))
                 result.addVertex(to)
             result.addEdge(from,to,edgeInfo!.key)
-        }
+            numberOfEdges++
+        } 
+        console.log(result)
         return result
     }
     public toVisNetwork():{nodes:DataSet<any>,edges:DataSet<any>}{

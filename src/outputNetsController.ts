@@ -77,6 +77,20 @@ const data = {
     edges:edges
 }
 const network = new Network(outputNetwork,data,options)
+export function doKruskal():boolean{
+  let data = getNetworkData()
+  let local = convertToLocalNet(data.nodes,data.edges,data.options)
+  if(local instanceof UndirectedWeightedGraph){
+    let result = local.kruskal().toVisNetwork()
+    if(result.nodes.getIds().length == 0)
+          return false
+    options.edges.arrows.to = false
+    network.setOptions(options)
+    network.setData(result)
+    return true
+  }
+  return false
+}
 export function doPrim(from:string):boolean{
   let data = getNetworkData()
   let local = convertToLocalNet(data.nodes,data.edges,data.options)

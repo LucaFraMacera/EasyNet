@@ -111,10 +111,14 @@ showOutNetButton.addEventListener("click",()=>{
     netArea.style.display = "inline"
     showOutNetButton.className = "tabSelected"
     showOutNetButton.textContent = "Nascondi Output"
+    let ouputDescription = document.querySelector("#outDescription") as HTMLLabelElement;
+    ouputDescription.style.display="inline"
   }
   else{
     netArea.style.display = "none"
     showOutNetButton.className = "tabNotSelected"
     showOutNetButton.textContent = "Mostra Output"
+    let ouputDescription = document.querySelector("#outDescription") as HTMLLabelElement;
+    ouputDescription.style.display="none"
   }
 })

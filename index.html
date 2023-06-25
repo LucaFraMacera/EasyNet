@@ -19,21 +19,22 @@
         <div id="algDiv" style="display: none;" class="menu">
           <div id= "algButtons" style="align-self: flex-end;">
             <label id="errorLabel1" class = "errorLabel">Il Grafo dev'essere Pesato</label>
-            <button id="dijkstra" class="functional">Dijkstra</button>
-            <button id="prim" class="functional">Prim</button>
+            <button id="dijkstra" class="tabNotSelected">Dijkstra</button>
+            <button id="prim" class="tabNotSelected">Prim</button>
             <button id="kruskal" class="functional">Kruskal</button>
           </div>
           <div id = "algData">
-            <div id="sourceDiv">
+            <div id="sourceDiv" style="display: none;">
               <label id="errorLabel" class = "errorLabel">Inserisci un nodo</label>
               <label>Sorgente: </label>
               <select id = "sourceNode"><option value = "">Nodo...</option>
               </select>
             </div>
-            <div>
+            <div style="display: none;">
               <label>Destinazione: </label><select id = "destinationNode"><option value = "">Nessuna</option>
               </select>
             </div>
+            <button id="excecuteAlg" style="display: none;" class="functional">Esegui</button>
           </div>
         </div>
       </fieldset>
@@ -55,6 +56,7 @@
         <div id="mainArea">
           <div id="labelArea" style="width: 100%;">
             <label id="description" class="description">Aggiungi nodi e archi per creare il Grafo</label>
+            <label id ="outDescription" style="display: none;" class="description"></label>
             <button id = "showMainNet" class = "tabSelected">Nascondi Network</button>
             <button id = "showOutNet" class = "tabNotSelected">Mostra Output</button>
           </div>

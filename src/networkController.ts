@@ -23,8 +23,9 @@ const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
 const commitEdgeEdit = document.querySelector("#commitEdgeEdit") as HTMLButtonElement;
 const edgeWeight = document.querySelector("#edgeWeight") as HTMLInputElement;
 const dijkstra = document.querySelector("#dijkstra")! as HTMLButtonElement
-const prim = document.querySelector("#prim")! as HTMLButtonElement
-const kruskal = document.querySelector("#kruskal")! as HTMLButtonElement
+const prim = document.querySelector("#prim")! as HTMLButtonElement;
+const kruskal = document.querySelector("#kruskal")! as HTMLButtonElement;
+const excecuteAlg = document.querySelector("#excecuteAlg")! as HTMLButtonElement
 function resetModes(){
   setDeleteMode(false)
   addEdgeMode(false)
@@ -303,6 +304,45 @@ commitEdgeEdit.addEventListener("click", async()=>{
   editEdgeMode(false)
 })
 dijkstra.addEventListener("click",async ()=>{
+  prim.className = "tabNotSelected"
+  dijkstra.className="tabSelected"
+  sourceSelect.parentElement.style.display="flex"
+  destinationSelect.parentElement.style.display="flex"
+  excecuteAlg.style.display="inline"
+})
+prim.addEventListener("click", async()=>{
+  dijkstra.className = "tabNotSelected"
+  prim.className="tabSelected"
+  sourceSelect.parentElement.style.display="flex"
+  destinationSelect.parentElement.style.display="none"
+  excecuteAlg.style.display="inline"
+})
+kruskal.addEventListener("click",async()=>{
+  let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
+  let outputNet= document.querySelector("#outputNetwork") as HTMLDivElement;
+  let notVisible =  outputNet.style.display == "none"
+  prim.className = "tabNotSelected"
+  dijkstra.className = "tabNotSelected"
+  sourceSelect.parentElement.style.display="none"
+  destinationSelect.parentElement.style.display="none"
+  excecuteAlg.style.display="none"
+  let result = outputNetworkController.doKruskal()
+  if(notVisible && result){
+    if(showOutNetButton.className != "tabNotSelectedGlow")
+      showOutNetButton.className = "tabNotSelectedGlow"
+  }
+  descriptionsController.setOutputDescription(descriptionsController.algorithms.KRUSKAL)
+})
+excecuteAlg.addEventListener("click", async()=>{
+  if(dijkstra.className == "tabSelected")
+    return await runDijkstra()
+  if(prim.className == "tabSelected")
+    return await runPrim()
+})
+export function getNetworkData():{nodes:DataSet<any>,edges:DataSet<any>,options:any}{
+  return {nodes,edges,options}
+}
+async function runDijkstra(){
   let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
   let algButtonDiv = document.querySelector("#algButtons") as HTMLDivElement;
   let outputNet= document.querySelector("#outputNetwork") as HTMLDivElement;
@@ -339,8 +379,10 @@ dijkstra.addEventListener("click",async ()=>{
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"
   }
-})
-prim.addEventListener("click", async()=>{
+  descriptionsController.setOutputDescription(descriptionsController.algorithms.DIJKSTRA)
+}
+
+async function runPrim(){
   let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
   let algButtonDiv = document.querySelector("#algButtons") as HTMLDivElement;
   let outputNet= document.querySelector("#outputNetwork") as HTMLDivElement;
@@ -376,7 +418,5 @@ prim.addEventListener("click", async()=>{
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"
   }
-})
-export function getNetworkData():{nodes:DataSet<any>,edges:DataSet<any>,options:any}{
-  return {nodes,edges,options}
+  descriptionsController.setOutputDescription(descriptionsController.algorithms.PRIM)
 }

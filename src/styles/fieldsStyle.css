@@ -67,6 +67,11 @@
 #showOutNet{
   font-size: 14px;
 }
+#outDescription{
+  align-self: flex-end;
+  width:30%;
+  text-align: left;
+}
 .menu{
   width : 100%;
   flex-direction: row;
