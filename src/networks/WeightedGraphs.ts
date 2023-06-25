@@ -1,4 +1,6 @@
 import { FibonacciHeap, INode } from "@tyriar/fibonacci-heap"
+import {IWeightedGraph} from "./IWeightedGraph"
+import {DataSet} from "vis-data"
 export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
     protected adiacencyList :Map<Vertex,Map<Vertex,number>>
     constructor(){
@@ -121,10 +123,10 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
         }
         return false
     }*/
-    dijkstra(from:Vertex, to:Vertex):Map<Vertex,Vertex>{
+    dijkstra(from:Vertex, to:Vertex):DirectedWeightedGraph<Vertex>{
         let isVisited = new Map<Vertex,boolean>
         let path = new Map<Vertex,number>
-        let minimunPath = new Map<Vertex,Vertex>   
+        let minimunPath = new DirectedWeightedGraph<Vertex>()  
         let queue = new FibonacciHeap<Vertex,number>((elem1:INode<Vertex,number>,elem2:INode<Vertex,number>)=>{
             return elem1.value! -elem2.value!
         })
@@ -134,10 +136,10 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
         }
         path.set(from,0)
         queue.insert(from,0)
+        minimunPath.addVertex(from)
         while(!queue.isEmpty()){
             let element = queue.extractMinimum()!
             isVisited.set(element.key,true)
-            console.log(element.key)
             if(element.key === to){
                 break
             }
@@ -146,17 +148,31 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
                     isVisited.set(entry[0],false)
                     queue.insert(entry[0],element.value! + entry[1])
                     path.set(entry[0],element.value! + entry[1])
-                    minimunPath.set(entry[0],element.key)
+                    minimunPath.addVertex(entry[0])
+                    minimunPath.addEdge(element.key,entry[0],entry[1])
                 }
                 else{
                     if((path.get(entry[0])! > (element.value! + entry[1])) && !isVisited.get(entry[0])){
                         queue.insert(entry[0],element.value! + entry[1])
                         path.set(entry[0],element.value! + entry[1])
-                        minimunPath.set(entry[0],element.key)
+                        minimunPath.removeVertex(entry[0])
+                        minimunPath.addVertex(entry[0])
+                        minimunPath.addEdge(element.key,entry[0],entry[1])
                     }
                 }
             }
         }
+        if(to){
+            while(!minimunPath.isPath(to)){
+                let reducePath = new Set<Vertex>(minimunPath.adiacencyList.keys())
+                for(const v of reducePath){
+                    let neighbours = minimunPath.adiacencyList.get(v)
+                    if(v != to && neighbours.size == 0)
+                        minimunPath.removeVertex(v)
+                }
+            }
+        }
+        console.log(minimunPath)
         return minimunPath
     }
     floydWharshall():number[][]{
@@ -189,6 +205,39 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
             i++
         }
         return matrix;
+    }
+    //Metodo che dice se il grafo è un cammino verso un certo Vertex. Se non lo è allora ritorna il primo nodo che 
+    private isPath(to:Vertex):boolean{
+        for(const v of this.adiacencyList.keys())
+            if(v!=to && this.adiacencyList.get(v).size == 0)
+                return false
+        return true
+    }
+    public toVisNetwork():{nodes:DataSet<any>,edges:DataSet<any>}{
+        let visNodes = new DataSet([])
+        let visEdges = new DataSet([])
+        let networkData = {
+            nodes:visNodes,
+            edges:visEdges
+        }
+        for(const node of this.adiacencyList.keys()){
+            visNodes.add({
+                id:node,
+                label:node
+            })
+        }
+        for(const node of this.adiacencyList.keys()){
+            let neighbours = this.adiacencyList.get(node)
+            for(const v of neighbours.entries()){
+                visEdges.add({
+                    from:node,
+                    to:v[0],
+                    id:node+""+v[0],
+                    label:""+v[1]
+                })
+            }
+        }
+        return networkData
     }
 }
 

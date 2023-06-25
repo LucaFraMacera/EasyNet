@@ -28,24 +28,30 @@
   width: 100%;
   text-align: justify;
 }
-#netArea{
-  width: 53%;
+#mainArea{
+  width: 100%;
   display:flex;
   flex-direction: column;
   gap:5px;
 }
-#outputArea{
-  width: 32%;
-  display:flex;
-  flex-direction: column;
-  gap:5px;
+#labelArea{
+  display: flex;
+  flex-direction: row;
+}
+#netArea{
+  width: 100%;
+  display: flex;
+  flex-direction:row;
+  gap:10px;
 }
 .network{
+    width:100%;
     border-radius: 10px;
     backdrop-filter: blur(20px);
     height:500px;
     box-shadow:2px 2px 5px springgreen,-2px -2px 5px springgreen;
 }
+
 #addEdgeField{
     box-shadow:-2px 2px 5px springgreen;
     width:75%;
@@ -54,3 +60,59 @@
     align-content: space-around;
     gap:10px;
   }
+#showMainNet{
+  font-size: 14px;
+  align-self: flex-end;
+}
+#showOutNet{
+  font-size: 14px;
+}
+.menu{
+  width : 100%;
+  flex-direction: row;
+  align-content: space-around;
+  gap : 10px
+}
+
+#algData{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+.glitchError{
+  animation: glitch 250ms none;
+}
+.errorLabel{
+    position: absolute;
+    display: none;
+}
+.showError{
+  font-size: 18px;
+  color: red;
+  text-shadow: 2px 0 rgb(101, 2, 182),-2px 1px rgb(2, 182, 137);
+  position: absolute;
+  display: inline;
+  animation: error 1000ms none;
+}
+
+@keyframes glitch{
+  0%{
+    transform: skewX(100deg);
+  }
+  50%{
+    transform: skewX(-150deg);
+  }
+  100%{
+    transform: skewX(50deg);
+    transform: translate(2px,-2px);
+  }
+}
+@keyframes error{
+  0%{
+    transform: translateY(-15px);
+  }
+  100%{
+    transform: translateY(-25px);
+  }
+}

@@ -9,76 +9,86 @@ import {getNetworkData} from "./networkController"
 const outputNetwork = document.querySelector("#outputNetwork")! as HTMLDivElement
 const nodes = new DataSet([])
 const edges = new DataSet([])
-var options = {
-    interaction: { 
-      hover: true,
-      selectConnectedEdges:false
+const options = {
+  interaction: { 
+    hover: true,
+    selectConnectedEdges:false
+  },
+  manipulation:false,
+  edges:{
+    "width":3,
+    smooth:{
+      "enabled":true,
+      "type":"continuous",
+      roundness:0.5
     },
-    manipulation:{
-      enabled:false
+    arrows:{
+      "to":true
     },
-    edges:{
-      "width":3,
-      smooth:{
-        "enabled":true,
-        "type":"continuous",
-        roundness:0.2
-      },
-      arrows:{
-        "to":false
-      },
-      "hoverWidth": 0,
-      font:{
-        "align":"middle",
-        "size":0,
-        "strokeColor":CONSTANTS.edgeWeightColor,
-         bold:{
-           "size":20,
-           "color":CONSTANTS.secondaryColor
-         }
-      }
-    },
-    nodes:{
-      "shape":"circle",
-      "borderWidth":3,
-      widthConstraint:50,
-      font:{
-        "align":"center",
-        "size":30,
-        "color":CONSTANTS.primaryColor
-      },
-      color:{
-        "background" :CONSTANTS.nodeColor, 
-        "border": CONSTANTS.primaryColor,
-      },
-      chosen:{
-        node:function(values, id, selected, hovering) {
-            values.borderColor=CONSTANTS.secondaryColor
-            values.fontColor=CONSTANTS.secondaryColor
-        },
-        label:function(values, id, selected, hovering) {
-            values.color=CONSTANTS.secondaryColor       
-            values.mod = "bold"
-        }
-      }
-    },
-    physics:{
-      enabled:false
+    "hoverWidth": 0,
+    font:{
+      "align":"middle",
+      "size":20,
+      "strokeColor":CONSTANTS.edgeWeightColor,
+       bold:{
+         "size":20,
+         "color":CONSTANTS.secondaryColor
+       }
     }
-  }as any; 
+  },
+  nodes:{
+    "shape":"circle",
+    "borderWidth":3,
+    widthConstraint:50,
+    font:{
+      "align":"center",
+      "size":30,
+      "color":CONSTANTS.primaryColor
+    },
+    color:{
+      "background" :CONSTANTS.nodeColor, 
+      "border": CONSTANTS.primaryColor,
+    },
+    chosen:{
+      node:function(values, id, selected, hovering) {
+          values.borderColor=CONSTANTS.secondaryColor
+          values.fontColor=CONSTANTS.secondaryColor
+      },
+      label:function(values, id, selected, hovering) {
+        values.color=CONSTANTS.secondaryColor    
+        values.mod = "bold"
+      }
+    }
+  },
+  physics:{
+    barnesHut: {
+      theta: 0.1,
+      gravitationalConstant:-50,
+      centralGravity: 0,
+      springConstant: 0,
+      avoidOverlap: 1
+    },
+    maxVelocity: 5,
+    minVelocity: 1
+  }
+}as any; 
 const data = {
     nodes:nodes,
     edges:edges
 }
 const network = new Network(outputNetwork,data,options)
-export function doDijkstra(from:String,to:String):void{
+export function doDijkstra(from:String,to:String):boolean{
     let data = getNetworkData()
-    let network = convertToLocalNet(data.nodes,data.edges,data.options)
-    console.log(network)
-    if(network instanceof UndirectedWeightedGraph || network instanceof DirectedWeightedGraph){
-        let result = network.dijkstra(from,to)
-        console.log(result)
-    }
+    let local = convertToLocalNet(data.nodes,data.edges,data.options)
+    if(local instanceof UndirectedWeightedGraph || local instanceof DirectedWeightedGraph){
+        let result1 = local.dijkstra(from,to)
+        console.log(result1)
+        let result = result1.toVisNetwork()
+        if(result.nodes.getIds().length == 0)
+          return false
+        network.setData(result)
+        return true
+    }   
 }
 function convertToLocalNet(nodes:DataSet<any>,edges:DataSet<any>,options):IGraph<String>|IWeightedGraph<String>{
     //Node ID are all V+(auto_increment number)

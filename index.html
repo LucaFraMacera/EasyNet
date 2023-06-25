@@ -7,18 +7,40 @@
   </head>
   <body>
     <h1>Crea Il Tuo Nuovo Grafo</h1>
-      <fieldset id="options"><legend>Opzioni</legend>
-        <label>Orientato: </label><button id="netType" class="switch">NO</button>
-        <label>Pesato: </label><button id="isWeighted" class="switch">NO</button>
-        <button id="dijkstra" class="functional">Dijkstra</button>
-        <button id="prim" class="functional">Prim</button>
-        <button id="kruskal" class="functional">Kruskal</button>
+      <fieldset id="options">
+        <legend>
+          <button id="optDivButton" class = "tabSelected">Opzioni</button>
+          <button id="algDivButton" class = "tabNotSelected">Algoritmi</button>
+        </legend>
+        <div id = "optDiv" class="menu">
+          <label>Orientato: </label><button id="netType" class="switch">NO</button>
+          <label>Pesato: </label><button id="isWeighted" class="switch">NO</button>
+        </div>
+        <div id="algDiv" style="display: none;" class="menu">
+          <div id= "algButtons" style="align-self: flex-end;">
+            <button id="dijkstra" class="functional">Dijkstra</button>
+            <button id="prim" class="functional">Prim</button>
+            <button id="kruskal" class="functional">Kruskal</button>
+          </div>
+          <div id = "algData">
+            <div id="sourceDiv">
+              <label id="errorLabel" class = "errorLabel">Inserisci un nodo</label>
+              <label>Sorgente: </label>
+              <select id = "sourceNode"><option value = "">Nodo...</option>
+              </select>
+            </div>
+            <div>
+              <label>Destinazione: </label><select id = "destinationNode"><option value = "">Nessuna</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </fieldset>
       <div id="app">
         <fieldset id="functions"><legend>Funzionalità</legend>
           <button id="addNode" class="functional">Crea Nodo</button>
           <fieldset id="addEdgeField">
-            <legend>Crea Nuovo Arco</legend>
+            <legend>Archi</legend>
             <div>
               <label id="weight" style="display: none;">Peso:<input type="number" id="edgeWeight" value="0"/></label>          
             </div>    
@@ -28,13 +50,16 @@
         <button id="delete" class="functional">Cancella</button>
         <button id="reset" class="functional">Resetta</button>
         </fieldset>
-        <div id="netArea">
-          <label id="description" class="description">Aggiungi nodi e archi per creare il Grafo</label>
-          <div id="network" class="network"></div>
-        </div>
-        <div id="outputArea">
-          <label id="outputDescr" class="description">Output Algoritmi</label>
-          <div id="outputNetwork" class="network"></div>
+        <div id="mainArea">
+          <div id="labelArea" style="width: 100%;">
+            <label id="description" class="description">Aggiungi nodi e archi per creare il Grafo</label>
+            <button id = "showMainNet" class = "tabSelected">Nascondi Network</button>
+            <button id = "showOutNet" class = "tabNotSelected">Mostra Output</button>
+          </div>
+          <div id="netArea">
+            <div id="network" class="network"></div>
+            <div id="outputNetwork" class="network" style="display: none;"></div>
+          </div>
         </div>
       </div>
     <script type="module" src="/src/main.ts"></script>

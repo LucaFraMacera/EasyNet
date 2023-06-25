@@ -4,7 +4,7 @@ import * as descriptionsController from "./descriptionController"
 import * as outputNetworkController from "./outputNetsController"
 import "./styles/networkStyle"
 import { CONSTANTS } from "./styles/networkStyle"
-import { Data } from "vis-network"
+
 let deleteMode = false
 let edgeMode = false
 let edgeModeEdit = false
@@ -14,6 +14,8 @@ let nodeIDs=1
 const nodes = new DataSet([]);
 const edges = new DataSet([]);
 const container = document.querySelector("#network") as HTMLDivElement;
+const sourceSelect = document.querySelector("#sourceNode") as HTMLSelectElement;
+const destinationSelect = document.querySelector("#destinationNode") as HTMLSelectElement;
 const deleteButton = document.querySelector("#delete") as HTMLButtonElement;
 const edgeButton = document.querySelector("#addEdge")as HTMLButtonElement;
 const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
@@ -58,12 +60,29 @@ export function addVertex(){
       id:nodeIDs,
       label:"V"+nodeIDs++
     })
+    let newOpt = document.createElement("option")
+    let newOpt2 = document.createElement("option")
+    newOpt.id="S"+(nodeIDs-1)
+    newOpt.value="V"+(nodeIDs-1)
+    newOpt.innerText="V"+(nodeIDs-1)
+    newOpt2.id="D"+(nodeIDs-1)
+    newOpt2.value="V"+(nodeIDs-1)
+    newOpt2.innerText="V"+(nodeIDs-1)
+    sourceSelect.appendChild(newOpt)
+    destinationSelect.appendChild(newOpt2)
 }
 export function resetNetwork(){
     nodeIDs=1
     nodes.clear()
     edges.clear()
     network.redraw()
+    let options:Node[] = []
+    options[0] = sourceSelect.firstChild
+    options[1] = destinationSelect.firstChild
+    sourceSelect.replaceChildren(null)
+    destinationSelect.replaceChildren(null)
+    sourceSelect.appendChild(options[0])
+    destinationSelect.appendChild(options[1])
 }
 function editEdgeMode(value:boolean){
   if(value && !edgeModeEdit){
@@ -124,14 +143,19 @@ const options = {
   manipulation:{
     addEdge:function(edgeData,callback){
       let weight = edgeWeight.value
-      edgeData.label = weight
-      callback(edgeData)
+      try{
+        edgeData.id = edgeData.from+""+edgeData.to
+        edgeData.label = weight
+        callback(edgeData)
+      }catch(EdgeAlreadyExists){/* block the creation of a new edge */}
       descriptionsController.setDescription(descriptionsController.descriptions.DEFAULT)
       edgeButton.innerText="Crea Arco"
       addEdgeMode(false)
     },
     deleteNode:function(nodeData,callback){
       callback(nodeData)
+      document.querySelector("#S"+nodeData.nodes[0]).remove()
+      document.querySelector("#D"+nodeData.nodes[0]).remove()
       deleteButton.innerText="Cancella"
       setDeleteMode(false)
     },
@@ -157,7 +181,7 @@ const options = {
     smooth:{
       "enabled":true,
       "type":"continuous",
-      roundness:0.2
+      roundness:0.5
     },
     chosen:{
       edge:function(values, id, selected, hovering) {
@@ -215,7 +239,15 @@ const options = {
     }
   },
   physics:{
-    enabled:false
+    barnesHut: {
+      theta: 0.1,
+      gravitationalConstant:-50,
+      centralGravity: 0,
+      springConstant: 0,
+      avoidOverlap: 1
+    },
+    maxVelocity: 5,
+    minVelocity: 1
   }
 }as any;
 var network = new Network(container, data, options);
@@ -235,9 +267,30 @@ export function setWeighted(value:boolean){
   network.setOptions(options)
 }
 
-dijkstra.addEventListener("click",()=>{
-  console.log(outputNetworkController.doDijkstra("V1","V4"))
-
+dijkstra.addEventListener("click",async ()=>{
+  let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
+  let outputNet= document.querySelector("#outputNetwork") as HTMLDivElement;
+  let sourceDiv = document.querySelector("#sourceDiv") as HTMLDivElement;
+  let errorLabel = document.querySelector("#errorLabel") as HTMLLabelElement;
+  let notVisible =  outputNet.style.display == "none"
+  let source = sourceSelect.options[sourceSelect.selectedIndex]
+  let destination = destinationSelect.options[destinationSelect.selectedIndex]
+  if(!source.id){
+    sourceDiv.className = "glitchError"
+    errorLabel.className = "showError"
+    setTimeout(()=>{
+      sourceDiv.className=null
+    },250)
+    setTimeout(()=>{
+      errorLabel.className="errorLabel"
+    },1000)
+    return
+  }
+  let result = outputNetworkController.doDijkstra(source.value,destination.value)
+  if(notVisible && result){
+    if(showOutNetButton.className != "tabNotSelectedGlow")
+      showOutNetButton.className = "tabNotSelectedGlow"
+  }
 })
 export function getNetworkData():{nodes:DataSet<any>,edges:DataSet<any>,options:any}{
   return {nodes,edges,options}

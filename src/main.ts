@@ -9,8 +9,11 @@ const resetButton = document.querySelector("#reset")as HTMLButtonElement;
 const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
 const enableDirectionButton = document.querySelector("#netType") as HTMLButtonElement;
 const enableWeightButton = document.querySelector("#isWeighted")as HTMLButtonElement;
-const weightSection = document.querySelector("#weight")as HTMLLabelElement
-
+const weightSection = document.querySelector("#weight")as HTMLLabelElement;
+const optDivButton = document.querySelector("#optDivButton") as HTMLButtonElement;
+const algDivButton = document.querySelector("#algDivButton") as HTMLButtonElement;
+const showMainNetButton = document.querySelector("#showMainNet") as HTMLButtonElement;
+const showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
 enableDirectionButton.addEventListener("click", ()=>{
   let bgColor = enableDirectionButton.style.getPropertyValue("--bgColor");
   let fontColor = enableDirectionButton.style.getPropertyValue("--fontColor");
@@ -64,4 +67,53 @@ deleteButton.addEventListener("click",()=>{
 })
 editEdgeButton.addEventListener("click",()=>{
   networkController.setMode(networkController.MODES.editEdge)
+})
+
+optDivButton.addEventListener("click",()=>{
+  let optDiv = document.querySelector("#optDiv") as HTMLDivElement;
+  let algDiv = document.querySelector("#algDiv") as HTMLDivElement;
+  if(optDiv.style.display == "none"){
+    let styleSwap = optDivButton.className 
+    optDiv.style.display = "flex"
+    optDivButton.className = algDivButton.className
+    algDiv.style.display = "none"
+    algDivButton.className = styleSwap
+  }
+})
+algDivButton.addEventListener("click",()=>{
+  let optDiv = document.querySelector("#optDiv") as HTMLDivElement;
+  let algDiv = document.querySelector("#algDiv") as HTMLDivElement;
+  if(algDiv.style.display == "none"){
+    let styleSwap = algDivButton.className 
+    algDiv.style.display = "flex"
+    algDivButton.className = optDivButton.className
+    optDiv.style.display = "none"
+    optDivButton.className = styleSwap
+  }
+})
+showMainNetButton.addEventListener("click",()=>{
+  let netArea = document.querySelector("#network") as HTMLDivElement;
+  if(netArea.style.display == "none"){
+    netArea.style.display = "inline"
+    showMainNetButton.className = "tabSelected"
+    showMainNetButton.textContent = "Nascondi Network"
+  }
+  else{
+    netArea.style.display = "none"
+    showMainNetButton.className = "tabNotSelected"
+    showMainNetButton.textContent = "Mostra Network"
+  }
+})
+showOutNetButton.addEventListener("click",()=>{
+  let netArea = document.querySelector("#outputNetwork") as HTMLDivElement;
+  if(netArea.style.display == "none"){
+    netArea.style.display = "inline"
+    showOutNetButton.className = "tabSelected"
+    showOutNetButton.textContent = "Nascondi Output"
+  }
+  else{
+    netArea.style.display = "none"
+    showOutNetButton.className = "tabNotSelected"
+    showOutNetButton.textContent = "Mostra Output"
+  }
 })

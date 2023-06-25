@@ -1,3 +1,4 @@
+import {IGraph} from "./IGraph"
 export class DirectedGraph<Vertex> implements IGraph<Vertex>{
     protected adiacencyList : Map<Vertex,Set<Vertex>>
     constructor(){
