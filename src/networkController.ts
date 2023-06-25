@@ -11,6 +11,7 @@ let edgeModeEdit = false
 let isDirected = false
 let isWeighted = false
 let nodeIDs=1
+let selectedEdge = null
 const nodes = new DataSet([]);
 const edges = new DataSet([]);
 const container = document.querySelector("#network") as HTMLDivElement;
@@ -19,6 +20,7 @@ const destinationSelect = document.querySelector("#destinationNode") as HTMLSele
 const deleteButton = document.querySelector("#delete") as HTMLButtonElement;
 const edgeButton = document.querySelector("#addEdge")as HTMLButtonElement;
 const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
+const commitEdgeEdit = document.querySelector("#commitEdgeEdit") as HTMLButtonElement;
 const edgeWeight = document.querySelector("#edgeWeight") as HTMLInputElement;
 const dijkstra = document.querySelector("#dijkstra")! as HTMLButtonElement
 const prim = document.querySelector("#prim")! as HTMLButtonElement
@@ -79,25 +81,32 @@ export function resetNetwork(){
     let options:Node[] = []
     options[0] = sourceSelect.firstChild
     options[1] = destinationSelect.firstChild
-    sourceSelect.replaceChildren(null)
-    destinationSelect.replaceChildren(null)
+    sourceSelect.replaceChildren()
+    destinationSelect.replaceChildren()
     sourceSelect.appendChild(options[0])
     destinationSelect.appendChild(options[1])
+    setMode(null)
 }
 function editEdgeMode(value:boolean){
   if(value && !edgeModeEdit){
     edgeModeEdit=true
     editEdgeButton.innerHTML="Annulla"
+    commitEdgeEdit.style.display = "inline"
     descriptionsController.setDescription(descriptionsController.descriptions.EDIT_EDGE)
+    selectedEdge=edges.get(network.getSelectedEdges()[0])
     network.editEdgeMode()
   }
   else{
-    editEdgeButton.innerHTML="Modifica"
     edgeModeEdit=false
     network.disableEditMode()
     descriptionsController.setDescription("DEFAULT")
+    editEdgeButton.innerHTML="Modifica"
+    commitEdgeEdit.style.display = "none"
     editEdgeButton.style.display="none"
     network.unselectAll()
+    if(selectedEdge){
+      edges.updateOnly(selectedEdge)
+    }
   }
 }
 function setDeleteMode(value:boolean){
@@ -131,6 +140,12 @@ container.addEventListener("click",()=>{
         network.deleteSelected()
     }
 })
+container.addEventListener("dblclick",async ()=>{
+  let selections = network.getSelectedEdges()
+  if(selections.length !==1 )
+    return
+  setMode(MODES.editEdge)
+})
 const data = {
   nodes: nodes,
   edges: edges
@@ -142,7 +157,7 @@ const options = {
   },
   manipulation:{
     addEdge:function(edgeData,callback){
-      let weight = edgeWeight.value
+      let weight = isWeighted? edgeWeight.value : "1"
       try{
         edgeData.id = edgeData.from+""+edgeData.to
         edgeData.label = weight
@@ -171,6 +186,7 @@ const options = {
       }else{
         let weight = edgeWeight.value
         edgeData.label = weight
+        selectedEdge = null
         callback(edgeData)
       }
       editEdgeMode(false)
@@ -263,18 +279,50 @@ export function setWeighted(value:boolean){
     options.edges.font.size=20
   }else{
     options.edges.font.size=0
+    let copyEdges = edges.get()
+    copyEdges.forEach(async (edge)=>{
+      try{
+        edges.updateOnly({id:edge.id,label:"1"})
+      }catch(Errore){console.error("bruh")}
+    })
   }
   network.setOptions(options)
 }
-
+edgeWeight.addEventListener("change",async()=>{
+  if(!edgeModeEdit)
+    return
+  let weight = edgeWeight.value
+  edges.updateOnly({id:selectedEdge.id,label:weight})
+})
+commitEdgeEdit.addEventListener("click", async()=>{
+  if(!edgeModeEdit)
+    return
+  let weight = edgeWeight.value
+  edges.updateOnly({id:selectedEdge.id,label:weight})
+  selectedEdge=null
+  editEdgeMode(false)
+})
 dijkstra.addEventListener("click",async ()=>{
   let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
+  let algButtonDiv = document.querySelector("#algButtons") as HTMLDivElement;
   let outputNet= document.querySelector("#outputNetwork") as HTMLDivElement;
   let sourceDiv = document.querySelector("#sourceDiv") as HTMLDivElement;
   let errorLabel = document.querySelector("#errorLabel") as HTMLLabelElement;
+  let errorLabel1 = document.querySelector("#errorLabel1") as HTMLLabelElement;
   let notVisible =  outputNet.style.display == "none"
   let source = sourceSelect.options[sourceSelect.selectedIndex]
   let destination = destinationSelect.options[destinationSelect.selectedIndex]
+  if(!isWeighted){
+    algButtonDiv.className = "glitchError"
+    errorLabel1.className = "showError1"
+    setTimeout(()=>{
+      algButtonDiv.className=null
+    },250)
+    setTimeout(()=>{
+      errorLabel1.className="errorLabel"
+    },1000)
+    return
+  }
   if(!source.id){
     sourceDiv.className = "glitchError"
     errorLabel.className = "showError"
@@ -287,6 +335,43 @@ dijkstra.addEventListener("click",async ()=>{
     return
   }
   let result = outputNetworkController.doDijkstra(source.value,destination.value)
+  if(notVisible && result){
+    if(showOutNetButton.className != "tabNotSelectedGlow")
+      showOutNetButton.className = "tabNotSelectedGlow"
+  }
+})
+prim.addEventListener("click", async()=>{
+  let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
+  let algButtonDiv = document.querySelector("#algButtons") as HTMLDivElement;
+  let outputNet= document.querySelector("#outputNetwork") as HTMLDivElement;
+  let sourceDiv = document.querySelector("#sourceDiv") as HTMLDivElement;
+  let errorLabel = document.querySelector("#errorLabel") as HTMLLabelElement;
+  let errorLabel1 = document.querySelector("#errorLabel1") as HTMLLabelElement;
+  let notVisible =  outputNet.style.display == "none"
+  let source = sourceSelect.options[sourceSelect.selectedIndex]
+  if(!isWeighted){
+    algButtonDiv.className = "glitchError"
+    errorLabel1.className = "showError1"
+    setTimeout(()=>{
+      algButtonDiv.className=null
+    },250)
+    setTimeout(()=>{
+      errorLabel1.className="errorLabel"
+    },1000)
+    return
+  }
+  if(!source.id){
+    sourceDiv.className = "glitchError"
+    errorLabel.className = "showError"
+    setTimeout(()=>{
+      sourceDiv.className=null
+    },250)
+    setTimeout(()=>{
+      errorLabel.className="errorLabel"
+    },1000)
+    return
+  }
+  let result = outputNetworkController.doPrim(source.value)
   if(notVisible && result){
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"

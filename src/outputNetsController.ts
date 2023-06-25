@@ -77,63 +77,79 @@ const data = {
     edges:edges
 }
 const network = new Network(outputNetwork,data,options)
-export function doDijkstra(from:String,to:String):boolean{
-    let data = getNetworkData()
-    let local = convertToLocalNet(data.nodes,data.edges,data.options)
-    if(local instanceof UndirectedWeightedGraph || local instanceof DirectedWeightedGraph){
-        let result1 = local.dijkstra(from,to)
-        console.log(result1)
-        let result = result1.toVisNetwork()
-        if(result.nodes.getIds().length == 0)
+export function doPrim(from:string):boolean{
+  let data = getNetworkData()
+  let local = convertToLocalNet(data.nodes,data.edges,data.options)
+  if(local instanceof UndirectedWeightedGraph){
+    let result = local.prim(from).toVisNetwork()
+    if(result.nodes.getIds().length == 0)
           return false
-        network.setData(result)
-        return true
-    }   
+    options.edges.arrows.to = false
+    network.setOptions(options)
+    network.setData(result)
+    return true
+  }
+  return false
+}
+export function doDijkstra(from:string,to:string):boolean{
+  let data = getNetworkData()
+  let local = convertToLocalNet(data.nodes,data.edges,data.options)
+  if(local instanceof UndirectedWeightedGraph || local instanceof DirectedWeightedGraph){
+      let result1 = local.dijkstra(from,to)
+      let result = result1.toVisNetwork()
+      if(result.nodes.getIds().length == 0)
+        return false
+      options.edges.arrows.to = true
+      network.setOptions(options)
+      network.setData(result)
+      return true
+  }   
+  return false
 }
 function convertToLocalNet(nodes:DataSet<any>,edges:DataSet<any>,options):IGraph<String>|IWeightedGraph<String>{
-    //Node ID are all V+(auto_increment number)
-    if(options.edges.arrows.to === true){
-        if(options.edges.font.size === 0)
-            return toDirected(nodes,edges)
-        else
-            return toDirectedWeighted(nodes,edges)
-    }
-    else{
-        if(options.edges.font.size === 0)
-            return toUndirected(nodes,edges)
-        else
-            return toUndirectedWeighted(nodes,edges)
-    }
+  //Node ID are all V+(auto_increment number)
+  if(options.edges.arrows.to === true){
+      if(options.edges.font.size === 0)
+          return toDirected(nodes,edges)
+      else
+          return toDirectedWeighted(nodes,edges)
+  }
+  else{
+      if(options.edges.font.size === 0)
+          return toUndirected(nodes,edges)
+      else
+          return toUndirectedWeighted(nodes,edges)
+  }
 }
 function toDirected(nodes:DataSet<any>,edges:DataSet<any>):DirectedGraph<String>{
-    let result = new DirectedGraph<String>()
-    for(const elem of nodes.get())
-        result.addVertex(elem.label)
-    for(const elem of edges.get())
-        result.addEdge("V"+elem.from,"V"+elem.to)
-    return result
+  let result = new DirectedGraph<String>()
+  for(const elem of nodes.get())
+      result.addVertex(elem.label)
+  for(const elem of edges.get())
+      result.addEdge("V"+elem.from,"V"+elem.to)
+  return result
 }
 function toUndirected(nodes:DataSet<any>,edges:DataSet<any>):UndirectedGraph<String>{
-    let result = new UndirectedGraph<String>()
-    for(const elem of nodes.get())
-        result.addVertex(elem.label)
-    for(const elem of edges.get())
-        result.addEdge("V"+elem.from,"V"+elem.to)
-    return result
+  let result = new UndirectedGraph<String>()
+  for(const elem of nodes.get())
+      result.addVertex(elem.label)
+  for(const elem of edges.get())
+      result.addEdge("V"+elem.from,"V"+elem.to)
+  return result
 }
 function toDirectedWeighted(nodes:DataSet<any>,edges:DataSet<any>):DirectedWeightedGraph<String>{
-    let result = new DirectedWeightedGraph<String>()
-    for(const elem of nodes.get())
-        result.addVertex(elem.label)
-    for(const elem of edges.get())
-        result.addEdge("V"+elem.from,"V"+elem.to,Number.parseFloat(elem.label))
-    return result
+  let result = new DirectedWeightedGraph<String>()
+  for(const elem of nodes.get())
+      result.addVertex(elem.label)
+  for(const elem of edges.get())
+      result.addEdge("V"+elem.from,"V"+elem.to,Number.parseFloat(elem.label))
+  return result
 }
 function toUndirectedWeighted(nodes:DataSet<any>,edges:DataSet<any>):UndirectedWeightedGraph<String>{
-    let result = new UndirectedWeightedGraph<String>()
-    for(const elem of nodes.get())
-        result.addVertex(elem.label)
-    for(const elem of edges.get())
-        result.addEdge("V"+elem.from,"V"+elem.to,Number.parseFloat(elem.label))
-    return result
+  let result = new UndirectedWeightedGraph<String>()
+  for(const elem of nodes.get())
+      result.addVertex(elem.label)
+  for(const elem of edges.get())
+      result.addEdge("V"+elem.from,"V"+elem.to,Number.parseFloat(elem.label))
+  return result
 }

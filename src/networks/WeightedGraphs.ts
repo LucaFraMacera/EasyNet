@@ -123,7 +123,13 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
         }
         return false
     }*/
-    dijkstra(from:Vertex, to:Vertex):DirectedWeightedGraph<Vertex>{
+    /**So Stupid it doesen't even care about negative cycles or negative edges
+     * @param from nodo di partenza 
+     * @param to (Non richiesto) nodo di destinazione.
+     * @returns Ritorna l'albero dei cammini minimi nel caso in cui il secondo parametro non sia specificato.
+     *          Ritorna un cammino da 'from' verso 'to' nel caso contrario.
+     */
+    dijkstra(from:Vertex, to?:Vertex):DirectedWeightedGraph<Vertex>{
         let isVisited = new Map<Vertex,boolean>
         let path = new Map<Vertex,number>
         let minimunPath = new DirectedWeightedGraph<Vertex>()  
@@ -172,7 +178,6 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
                 }
             }
         }
-        console.log(minimunPath)
         return minimunPath
     }
     floydWharshall():number[][]{
@@ -269,7 +274,11 @@ export class UndirectedWeightedGraph<Vertex> extends DirectedWeightedGraph<Verte
             }
         }
         return queue
-    }
+    }/**
+     * 
+     * @param source Nodo sorgente da cui far partire l'albero ricoprente.
+     * @returns Minimo albero ricoprente del grafo corrente.
+     */
     prim(source:Vertex):UndirectedWeightedGraph<Vertex>{
         type Edge= {
             from:Vertex,
@@ -326,6 +335,33 @@ export class UndirectedWeightedGraph<Vertex> extends DirectedWeightedGraph<Verte
         }
         return result
     }
-    
+    public toVisNetwork():{nodes:DataSet<any>,edges:DataSet<any>}{
+        let visNodes = new DataSet([])
+        let visEdges = new DataSet([])
+        let networkData = {
+            nodes:visNodes,
+            edges:visEdges
+        }
+        for(const node of this.adiacencyList.keys()){
+            visNodes.add({
+                id:node,
+                label:node
+            })
+        }
+        for(const node of this.adiacencyList.keys()){
+            let neighbours = this.adiacencyList.get(node)
+            for(const v of neighbours.entries()){
+                if(!visEdges.get(v[0]+""+node)){
+                    visEdges.add({
+                        from:node,
+                        to:v[0],
+                        id:node+""+v[0],
+                        label:""+v[1]
+                    })
+                }
+            }
+        }
+        return networkData
+    }
 }
 

@@ -73,7 +73,6 @@
   align-content: space-around;
   gap : 10px
 }
-
 #algData{
   display: flex;
   flex-direction: row;
@@ -86,33 +85,25 @@
 .errorLabel{
     position: absolute;
     display: none;
+    width:100%;
 }
 .showError{
-  font-size: 18px;
+  font-size: 20px;
   color: red;
   text-shadow: 2px 0 rgb(101, 2, 182),-2px 1px rgb(2, 182, 137);
   position: absolute;
   display: inline;
+  width:200%;
   animation: error 1000ms none;
 }
+.showError1{
+  font-size: 25px;
+  color: red;
+  text-shadow: 2px 0 rgb(101, 2, 182),-2px 1px rgb(2, 182, 137);
+  position: absolute;
+  display: inline;
+  width:500%;
+  animation: error1 1000ms none;
+}
 
-@keyframes glitch{
-  0%{
-    transform: skewX(100deg);
-  }
-  50%{
-    transform: skewX(-150deg);
-  }
-  100%{
-    transform: skewX(50deg);
-    transform: translate(2px,-2px);
-  }
-}
-@keyframes error{
-  0%{
-    transform: translateY(-15px);
-  }
-  100%{
-    transform: translateY(-25px);
-  }
-}
+

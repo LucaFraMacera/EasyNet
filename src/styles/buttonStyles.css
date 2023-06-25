@@ -88,21 +88,11 @@
 .tabNotSelected:hover{
   border-width: 3px; 
   font-weight: bold;
+  animation: popUp 150ms normal;
+  transform: scale(1.20,1.20);
 }
-@keyframes glowing {
-  0% {
-    color: rgb(4, 168, 86);
-    background-color: black;
-  }
-  50% {
-    color: rgb(89, 255, 172);
-    background-color: rgb(0, 41, 20);
-  }
-  100% {
-    color: rgb(4, 168, 86);
-    background-color: black;
-  }
-}
+
+
 .tabNotSelectedGlow{
   --bgColor:black;
   --fontColor:springgreen;

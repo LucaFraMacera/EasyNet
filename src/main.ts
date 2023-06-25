@@ -1,4 +1,5 @@
 import * as networkController from "./networkController";
+import "./styles/animations.css"
 import "./styles/buttonStyles.css"
 import "./styles/fieldsStyle.css"
 import "./styles/generalStyle.css"

@@ -1,0 +1,52 @@
+@keyframes glowing {
+    0% {
+      color: rgb(4, 168, 86);
+      background-color: black;
+    }
+    50% {
+      color: rgb(89, 255, 172);
+      background-color: rgb(0, 41, 20);
+    }
+    100% {
+      color: rgb(4, 168, 86);
+      background-color: black;
+    }
+  }
+
+  @keyframes glitch{
+    0%{
+      transform: skewX(100deg);
+    }
+    50%{
+      transform: skewX(-150deg);
+    }
+    100%{
+      transform: skewX(50deg);
+      transform: translate(2px,-2px);
+    }
+  }
+  @keyframes error{
+    0%{
+      transform: translateY(-15px);
+    }
+    100%{
+      transform: translateY(-25px);
+    }
+  }
+@keyframes popUp{
+    0%{
+    transform: scale(1.10,1.10);
+    }
+    100%{
+    transform: scale(1.25,1.25);
+    }
+}
+
+@keyframes error1{
+    0%{
+        transform: translateY(-65px);
+    }
+    100%{
+        transform: translateY(-70px);
+    }
+}
