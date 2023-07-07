@@ -4,6 +4,7 @@ import "./styles/animations.css"
 import "./styles/buttonStyles.css"
 import "./styles/fieldsStyle.css"
 import "./styles/generalStyle.css"
+import "./styles/media.css"
 const addButton = document.querySelector("#addNode")as HTMLButtonElement;
 const edgeButton = document.querySelector("#addEdge")as HTMLButtonElement;
 const deleteButton = document.querySelector("#delete")as HTMLButtonElement;

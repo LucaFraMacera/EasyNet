@@ -509,7 +509,6 @@ kruskal.addEventListener("click",async()=>{
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"
   }
-  descriptionsController.setOutputDescription(descriptionsController.algorithms.KRUSKAL)
 })
 floydWharshall.addEventListener("click", async()=>{
   let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
@@ -525,7 +524,6 @@ floydWharshall.addEventListener("click", async()=>{
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"
   }
-  descriptionsController.setOutputDescription(descriptionsController.algorithms.KRUSKAL)
 })
 excecuteAlg.addEventListener("click", async()=>{
   if(dijkstra.className == "tabSelected")
@@ -583,7 +581,6 @@ async function runDijkstra(){
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"
   }
-  descriptionsController.setOutputDescription(descriptionsController.algorithms.DIJKSTRA)
 }
 
 async function runPrim(){
@@ -622,7 +619,6 @@ async function runPrim(){
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"
   }
-  descriptionsController.setOutputDescription(descriptionsController.algorithms.PRIM)
 }
 async function setBipatition(coloration:Map<String,string>):Promise<void>{
   let color = null

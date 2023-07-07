@@ -7,7 +7,6 @@
     <title>EasyNET</title>
   </head>
   <body>
-    <h1>Crea Il Tuo Nuovo Grafo</h1>
     <div class="storage">
       <button id="saveNet" class="functional">Salva</button>
       <button id="loadNet" class="functional">Carica</button>
@@ -44,7 +43,7 @@
           <button id ="complete" class="functional">Rendi Clique</button>
         </div>
         <div id="algDiv" style="display: none;" class="menu">
-          <div id= "algButtons" style="align-self: flex-end;">
+          <div id= "algButtons">
             <label id="errorLabel1" class = "errorLabel">Il Grafo dev'essere Pesato</label>
             <button id="dijkstra" class="tabNotSelected">Dijkstra</button>
             <button id="prim" class="tabNotSelected">Prim</button>
@@ -87,7 +86,6 @@
         <div id="mainArea">
           <div id="labelArea" style="width: 100%;">
             <label id="description" class="description">Aggiungi nodi e archi per creare il Grafo</label>
-            <label id ="outDescription" style="display: none;" class="description"></label>
             <button id = "showMainNet" class = "tabSelected">Nascondi Network</button>
             <button id = "showOutNet" class = "tabNotSelected">Mostra Output</button>
           </div>

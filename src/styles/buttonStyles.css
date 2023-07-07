@@ -23,22 +23,6 @@
                );
     transition: color var(--t,0.3s), background-size 0.3s;
   }
-.functional:focus-visible {
-    outline-offset: calc(-1*var(--border));
-    outline: var(--border) solid #000c;
-    clip-path: none;
-    background-size: 0 0;
-  }
-  .functional:hover,
-  .functional:active{
-    background-size: 100% 100%;
-    color:rgb(1, 10, 1);
-    --t: 0.2s 0.1s;
-  }
-  .functional:active {
-    --s: #0005;
-    transition: none;
-  }
 .switch{
   --bgColor:black;
   --fontColor:springgreen;
@@ -48,11 +32,6 @@
   color: var(--fontColor);
   font-size: 16px;
   font-weight: bold;
-}
-.switch:hover{
-  cursor: pointer;
-  color:var(--bgColor);
-  background-color:var(--fontColor);
 }
 #editEdge{
   display: none;
