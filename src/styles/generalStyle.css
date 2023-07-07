@@ -67,3 +67,26 @@ select option {
   background-color:black;
   font-weight: bold;
 }
+fieldset table{
+  display: block;
+  border-radius: 0.5rem;
+  border-collapse: collapse;
+  border-spacing: 0;
+  text-align: center;
+  font-size: 1rem;  
+  border:0.1rem solid springgreen;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 30em;
+}
+fieldset table th{
+  background-color: black;
+  font-size: 1.2rem; 
+}
+table tbody{
+  white-space: nowrap;
+}
+table tr td{
+  padding:1rem;
+  border:0.1rem solid springgreen;
+}

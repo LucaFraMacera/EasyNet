@@ -16,38 +16,46 @@ const options = {
   },
   manipulation:false,
   edges:{
-    "width":3,
+    width:2,
     smooth:{
-      "enabled":true,
-      "type":"continuous",
+      enabled:true,
+      type:"continuous",
       roundness:0.5
     },
-    arrows:{
-      "to":true
+    chosen:{
+      edge:function(values, id, selected, hovering) {
+        values.color=(hovering || selected)?HOVER_COLORS.border:MAIN_COLORS.primaryColor
+      }
     },
-    "hoverWidth": 0,
+    arrows:{
+      to:true
+    },
+    hoverWidth: 0,
     font:{
-      "align":"middle",
-      "size":20,
-      "strokeColor":MAIN_COLORS.edgeWeightColor,
+      align:"middle",
+      size:20,
+      strokeColor:MAIN_COLORS.edgeWeightStroke,
+      strokeWidth:3,
+      color:MAIN_COLORS.edgeWeightColor,
        bold:{
-         "size":20,
-         "color":HOVER_COLORS.label
+         size:20
        }
     }
   },
   nodes:{
-    "shape":"circle",
-    "borderWidth":3,
+    shape:"circle",
+    borderWidth:3,
     widthConstraint:50,
-    font:{
-      "align":"center",
-      "size":30,
-      "color":MAIN_COLORS.primaryColor
-    },
     color:{
-      "background" :MAIN_COLORS.nodeColor, 
-      "border": MAIN_COLORS.primaryColor,
+      background: MAIN_COLORS.nodeColor,
+      border: MAIN_COLORS.primaryColor
+    },
+    font:{
+      align:"center",
+      size:30,
+      strokeWidth:2,
+      color:MAIN_COLORS.primaryColor,
+      strokeColor:MAIN_COLORS.nodeColor
     },
     chosen:{
       node:function(values, id, selected, hovering) {
@@ -77,6 +85,48 @@ const data = {
     edges:edges
 }
 const network = new Network(outputNetwork,data,options)
+export async function doFloydAndWharshall():Promise<boolean>{
+  return new Promise(async (res,rej)=>{
+    let netData = getNetworkData()
+    let local = convertToLocalNet(netData.nodes,netData.edges,netData.options)
+    if(local instanceof DirectedWeightedGraph || local instanceof UndirectedWeightedGraph){
+      let result = local.floydWharshall()
+      nodes.clear()
+      edges.clear()
+      console.log(result)
+      result.forEach((elem,indx)=>{
+        let nodeID = "V"+(indx+1)
+        if(!nodes.get(nodeID)){
+          nodes.add({
+            id:nodeID,
+            label:nodeID
+          })
+        }
+        elem.forEach((elem,indx1)=>{
+          let neighbourID = "V"+(indx1+1)
+          if(!nodes.get(neighbourID)){
+            nodes.add({
+              id:neighbourID,
+              label:neighbourID
+            })
+          }
+          if(neighbourID !== nodeID && elem !== Infinity){
+            edges.add({
+              id:nodeID+neighbourID,
+              from:nodeID,
+              to:neighbourID,
+              label:""+elem
+            })
+          }
+        })
+      })
+      network.setOptions(options)
+      network.setData(data)
+      res(true)
+    }
+    rej(false)
+  })
+}
 export function doKruskal():boolean{
   let data = getNetworkData()
   let local = convertToLocalNet(data.nodes,data.edges,data.options)
@@ -108,9 +158,9 @@ export function doPrim(from:string):boolean{
 export function doDijkstra(from:string,to:string):boolean{
   let data = getNetworkData()
   let local = convertToLocalNet(data.nodes,data.edges,data.options)
+  console.log(local)
   if(local instanceof UndirectedWeightedGraph || local instanceof DirectedWeightedGraph){
-      let result1 = local.dijkstra(from,to)
-      let result = result1.toVisNetwork()
+      let result = local.dijkstra(from,to).toVisNetwork()
       if(result.nodes.getIds().length == 0)
         return false
       options.edges.arrows.to = true

@@ -42,9 +42,9 @@ const edgeWeight = document.querySelector("#edgeWeight") as HTMLInputElement;
 const dijkstra = document.querySelector("#dijkstra")! as HTMLButtonElement
 const prim = document.querySelector("#prim")! as HTMLButtonElement;
 const kruskal = document.querySelector("#kruskal")! as HTMLButtonElement;
+const floydWharshall = document.querySelector("#flwr")! as HTMLButtonElement;
 const excecuteAlg = document.querySelector("#excecuteAlg")! as HTMLButtonElement;
-const undoButton = document.querySelector("#undo") as HTMLButtonElement;
-const redoButton = document.querySelector("#redo") as HTMLButtonElement;
+
 function resetModes(){
   setDeleteMode(false)
   addEdgeMode(false)
@@ -303,24 +303,24 @@ const options = {
       }
     },
     arrows:{
-      "to":false
+      to:false
     },
-    "hoverWidth": 0,
+    hoverWidth: 0,
     font:{
-      "align":"middle",
-      "size":0,
-      "strokeColor":MAIN_COLORS.edgeWeightStroke,
-      "strokeWidth":3,
-      "color":MAIN_COLORS.edgeWeightColor,
+      align:"middle",
+      size:0,
+      strokeColor:MAIN_COLORS.edgeWeightStroke,
+      strokeWidth:3,
+      color:MAIN_COLORS.edgeWeightColor,
        bold:{
-         "size":20
+         size:20
        }
     },
     color: MAIN_COLORS.primaryColor
   },
   nodes:{
-    "shape":"circle",
-    "borderWidth":5,
+    shape:"circle",
+    borderWidth:5,
     widthConstraint:50,
     chosen:{
       node:function(values, id, selected, hovering) {
@@ -505,6 +505,22 @@ kruskal.addEventListener("click",async()=>{
   destinationSelect.parentElement.style.display="none"
   excecuteAlg.style.display="none"
   let result = outputNetworkController.doKruskal()
+  if(notVisible && result){
+    if(showOutNetButton.className != "tabNotSelectedGlow")
+      showOutNetButton.className = "tabNotSelectedGlow"
+  }
+  descriptionsController.setOutputDescription(descriptionsController.algorithms.KRUSKAL)
+})
+floydWharshall.addEventListener("click", async()=>{
+  let showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
+  let outputNet= document.querySelector("#outputNetwork") as HTMLDivElement;
+  let notVisible =  outputNet.style.display == "none"
+  prim.className = "tabNotSelected"
+  dijkstra.className = "tabNotSelected"
+  sourceSelect.parentElement.style.display="none"
+  destinationSelect.parentElement.style.display="none"
+  excecuteAlg.style.display="none"
+  let result = await outputNetworkController.doFloydAndWharshall()
   if(notVisible && result){
     if(showOutNetButton.className != "tabNotSelectedGlow")
       showOutNetButton.className = "tabNotSelectedGlow"

@@ -13,27 +13,6 @@ type SchemaElement ={
         nodes:any[]
     }
 }
-export async function openConnection():Promise<boolean>{
-    return new Promise((res,rej)=>{
-        let request = indexedDB.open(DB_NAME,3)
-        request.onerror= error =>{
-            console.error(error)
-            rej(false)
-        }
-        request.onsuccess = success =>{
-            let target = success.target as any
-            connection = target.result
-            res(true)
-        }
-        request.onupgradeneeded = (success)=>{
-            let target = success.target as any
-            connection = target.result
-            connection.createObjectStore(schema, { keyPath: "nome" })
-        }
-    })
-}
-
-
 export async function getAllNetworks():Promise<SchemaElement[]>{
     return new Promise(async (res,rej)=>{
         connection = await getConnection()
@@ -66,6 +45,17 @@ export async function updateNetwork(data:SchemaElement):Promise<boolean>{
         let query = connection.transaction(schema,"readwrite").objectStore(schema).put(data)
         query.onerror = error=>rej(error)
         query.onsuccess = ()=>res(true)
+    })
+}
+export async function remove(networkName:string):Promise<boolean>{
+    return new Promise(async (res,rej)=>{
+        connection = await getConnection()
+        try{
+            connection.transaction(schema,"readwrite").objectStore(schema).delete(networkName)
+            res(true)
+        }catch(FailedDelete){
+            rej(FailedDelete)
+        }
     })
 }
 async function getConnection():Promise<IDBDatabase>{

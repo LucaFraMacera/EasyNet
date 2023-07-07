@@ -118,14 +118,38 @@ loadNet.addEventListener("click",async () => {
   let overlay = document.querySelector("#overlay") as HTMLDivElement;
   let saveOver = document.querySelector("#saveOverlay") as HTMLFieldSetElement; 
   let loadOver = document.querySelector("#loadOverlay") as HTMLFieldSetElement; 
-  let storedNet = document.querySelector("#storedNets") as HTMLSelectElement;
-  storedNet.replaceChildren()
+  let storedNet = document.querySelector("#storedNets") as HTMLTableElement;
+  let tableBody = storedNet.querySelector("tbody") as HTMLTableSectionElement
+  let tableHeader = tableBody.firstElementChild
+  tableBody.replaceChildren()
+  tableBody.appendChild(tableHeader)
   let storedNetworks = await storageController.getAllNetworks()
   for(const network of storedNetworks){
-    let option = document.createElement("option")
-    option.value =JSON.stringify(network)
-    option.innerText = network.nome
-    storedNet.appendChild(option)
+    let row = document.createElement("tr")
+    let netName = document.createElement("td")
+    let data1 = document.createElement("td")
+    let data2 = document.createElement("td")
+    let selectButton = document.createElement("button")
+    let deleteButton = document.createElement("button")
+    netName.innerText = network.nome
+    selectButton.innerText="Apri"
+    selectButton.className="functional"
+    selectButton.addEventListener("click",()=>{
+      loadNetwork(network)
+    })
+    deleteButton.innerText="Elimina"
+    deleteButton.className="functional"
+    deleteButton.addEventListener("click",()=>{
+      let result = confirm("Sicuro di eliminare [ "+network.nome+" ] ? L'eliminazione porterà la perdità permanente dei dati")
+      if(result)
+        deleteNetwork(network.nome)
+    })
+    data1.appendChild(selectButton)
+    data2.appendChild(deleteButton)
+    row.appendChild(netName)
+    row.appendChild(data1)
+    row.appendChild(data2)
+    tableBody.appendChild(row)
   }
   overlay.style.display = "inline"
   saveOver.style.display = "none"
@@ -167,14 +191,9 @@ async function removeOverlay(){
   let overlay = document.querySelector("#overlay") as HTMLDivElement;
   overlay.style.display = "none"
 }
-async function loadNetwork(){
-  let storedNet = document.querySelector("#storedNets") as HTMLSelectElement;
-  let value = storedNet.value
-  if(!value)
-    return
-  let informations = JSON.parse(value)
-  networkController.loadNetwork(informations)
-  if(informations.info.isWeighted){
+async function loadNetwork(networkData){
+  networkController.loadNetwork({info:networkData.info,data:networkData.data})
+  if(networkData.info.isWeighted){
     if(enableWeightButton.innerText == "NO"){
       enableWeightButton.click()
     }
@@ -184,7 +203,7 @@ async function loadNetwork(){
       enableWeightButton.click()
     }
   }
-  if(informations.info.isDirected){
+  if(networkData.info.isDirected){
     if(enableDirectionButton.innerText == "NO"){
       enableDirectionButton.click()
     }
@@ -194,7 +213,7 @@ async function loadNetwork(){
       enableDirectionButton.click()
     }
   }
-  if(informations.info.isBipartite){
+  if(networkData.info.isBipartite){
     if(enableBipartitionButton.innerText == "NO"){
       enableBipartitionButton.click()
     }
@@ -205,7 +224,7 @@ async function loadNetwork(){
     }
   }
   let text = document.querySelector("#nomeGrafo") as HTMLInputElement;
-  text.value = informations.nome
+  text.value = networkData.nome
   removeOverlay()
 }
 async function saveNetwork(){
@@ -221,4 +240,8 @@ async function saveNetwork(){
       return
   }
   removeOverlay()
+}
+async function deleteNetwork(networkName:string):Promise<boolean>{
+  removeOverlay()
+  return await storageController.remove(networkName)
 }

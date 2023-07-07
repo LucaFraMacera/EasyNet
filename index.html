@@ -20,8 +20,11 @@
           <input type="text" id="nomeGrafo" />
         </div>
         <div id = "loadOverlay">
-          <label>Seleziona: </label>
-          <select id="storedNets"></select>
+          <table id = storedNets>
+           <tbody>
+            <th colspan="3">Seleziona:</th>
+           </tbody>
+          </table>
         </div>
         <div>
           <button id ="s1" class = "functional">Carica</button>
@@ -46,6 +49,7 @@
             <button id="dijkstra" class="tabNotSelected">Dijkstra</button>
             <button id="prim" class="tabNotSelected">Prim</button>
             <button id="kruskal" class="functional">Kruskal</button>
+            <button id="flwr" class="functional">Floyd&Warshall</button>
           </div>
           <div id = "algData">
             <div id="sourceDiv" style="display: none;">
