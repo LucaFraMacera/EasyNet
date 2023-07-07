@@ -68,5 +68,11 @@ async function getConnection():Promise<IDBDatabase>{
             let target = success.target as any
             res(target.result)
         }
+        openRequest.onupgradeneeded = create=>{
+            let target = create.target as any
+            let db = target.result as IDBDatabase
+            db.createObjectStore(schema,{keyPath:"nome"})
+        }
     })
+
 }
