@@ -7,4 +7,5 @@ export interface IWeightedGraph<Vertex>{
     getEdgeWeight(from:Vertex,to:Vertex):number
     removeVertex(vertex:Vertex):boolean
     removeEdge(from:Vertex,to:Vertex):boolean
+    isBipartite(getAssignedColors?:boolean):boolean|Map<Vertex,string>
 }

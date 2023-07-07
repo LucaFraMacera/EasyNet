@@ -8,6 +8,21 @@
     box-shadow:0px 0px 0px springgreen,0 0 5px springgreen ;
     margin-bottom:15px;
 }
+.storage{
+  position:absolute;
+  right: 1rem;
+  top:5rem;
+}
+#overlay{
+  display:none;
+  position: absolute;
+  top:0;
+  right:0;
+  z-index: 2;
+  backdrop-filter: blur(1em);
+  width:100%;
+  height: 150%;
+}
 #functions{
     backdrop-filter: blur(20px);
     width:15%;
@@ -72,12 +87,16 @@
   width:30%;
   text-align: left;
 }
+#swapEdge{
+  font-size:20px;
+}
 .menu{
   width : 100%;
   flex-direction: row;
   align-content: space-around;
   gap : 10px
 }
+
 #algData{
   display: flex;
   flex-direction: row;
@@ -111,4 +130,19 @@
   animation: error1 1000ms none;
 }
 
-
+#overlay fieldset{
+  margin-left: auto;
+  margin-top:10rem;
+  margin-right:auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  gap:1em;
+}
+#overlay fieldset div{
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+  gap:2em;
+}

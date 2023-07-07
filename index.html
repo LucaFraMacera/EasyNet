@@ -3,10 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="./src/imgs/icon2.png">
     <title>EasyNET</title>
   </head>
   <body>
     <h1>Crea Il Tuo Nuovo Grafo</h1>
+    <div class="storage">
+      <button id="saveNet" class="functional">Salva</button>
+      <button id="loadNet" class="functional">Carica</button>
+    </div>
+    <div id = "overlay">
+      <fieldset id="saveLoadOverlay">
+        <legend>Carica Grafo</legend>
+        <div id = "saveOverlay">
+          <label>Inserisci Nome: </label>
+          <input type="text" id="nomeGrafo" />
+        </div>
+        <div id = "loadOverlay">
+          <label>Seleziona: </label>
+          <select id="storedNets"></select>
+        </div>
+        <div>
+          <button id ="s1" class = "functional">Carica</button>
+          <button id= "r1" class = "functional">Annulla</button>
+        </div>
+      </fieldset>
+    </div>
       <fieldset id="options">
         <legend>
           <button id="optDivButton" class = "tabSelected">Opzioni</button>
@@ -15,6 +37,8 @@
         <div id = "optDiv" class="menu">
           <label>Orientato: </label><button id="netType" class="switch">NO</button>
           <label>Pesato: </label><button id="isWeighted" class="switch">NO</button>
+          <label>Bipartito: </label><button id="isBipartite" class="switch">NO</button>
+          <button id ="complete" class="functional">Rendi Clique</button>
         </div>
         <div id="algDiv" style="display: none;" class="menu">
           <div id= "algButtons" style="align-self: flex-end;">
@@ -47,8 +71,11 @@
               <label id="weight" style="display: none;">Peso:<input type="number" id="edgeWeight" value="0"/></label>          
             </div>    
             <button id="addEdge" class="functional">Crea Arco</button>
+            <div style="display: flex;flex-direction: row;">
+              <button id="commitEdgeEdit" style="display: none;" class="functional">Conferma</button>
+              <button id="swapEdge" style="display: none;" class = "functional">↔</button>
+            </div>
             <button id="editEdge" class="functional">Modifica</button>
-            <button id="commitEdgeEdit" style="display: none;" class="functional">Conferma</button>
         </fieldset>
         <button id="delete" class="functional">Cancella</button>
         <button id="reset" class="functional">Resetta</button>

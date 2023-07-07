@@ -1,4 +1,5 @@
 import * as networkController from "./networkController";
+import * as storageController from "./storageController"
 import "./styles/animations.css"
 import "./styles/buttonStyles.css"
 import "./styles/fieldsStyle.css"
@@ -10,47 +11,34 @@ const resetButton = document.querySelector("#reset")as HTMLButtonElement;
 const editEdgeButton = document.querySelector("#editEdge")as HTMLButtonElement;
 const enableDirectionButton = document.querySelector("#netType") as HTMLButtonElement;
 const enableWeightButton = document.querySelector("#isWeighted")as HTMLButtonElement;
-const weightSection = document.querySelector("#weight")as HTMLLabelElement;
+const enableBipartitionButton = document.querySelector("#isBipartite")as HTMLButtonElement;
 const optDivButton = document.querySelector("#optDivButton") as HTMLButtonElement;
 const algDivButton = document.querySelector("#algDivButton") as HTMLButtonElement;
 const showMainNetButton = document.querySelector("#showMainNet") as HTMLButtonElement;
 const showOutNetButton = document.querySelector("#showOutNet") as HTMLButtonElement;
+const completeNetButton = document.querySelector("#complete") as HTMLButtonElement;
+const r1 = document.querySelector("#r1") as HTMLButtonElement;
+const s1 = document.querySelector("#s1") as HTMLButtonElement;
+const loadNet = document.querySelector("#loadNet") as HTMLButtonElement;
+const saveNet = document.querySelector("#saveNet") as HTMLButtonElement;
 enableDirectionButton.addEventListener("click", ()=>{
-  let bgColor = enableDirectionButton.style.getPropertyValue("--bgColor");
-  let fontColor = enableDirectionButton.style.getPropertyValue("--fontColor");
-  if(!bgColor || bgColor === "black"){
-    enableDirectionButton.innerText="SI"
-    bgColor="springgreen"
-    fontColor="black"
-    networkController.setNetworkDirection(true)
-  }else{
-    enableDirectionButton.innerText="NO"
-    bgColor="black"
-    fontColor="springgreen"
-    networkController.setNetworkDirection(false)
-  }
-  enableDirectionButton.style.setProperty("--bgColor",bgColor)
-  enableDirectionButton.style.setProperty("--fontColor",fontColor)
+  networkController.setMode(null)
+  switchStyleChange(enableDirectionButton)
+  networkController.switchNetworkDirection()
 })
-
 enableWeightButton.addEventListener("click",()=>{
-  let bgColor = enableWeightButton.style.getPropertyValue("--bgColor");
-  let fontColor = enableWeightButton.style.getPropertyValue("--fontColor");
-  if(enableWeightButton.innerHTML === "NO"){
-    enableWeightButton.innerText="SI"
-    bgColor="springgreen"
-    fontColor="black"
-    weightSection.style.display="inline"
-    networkController.setWeighted(true)
-  }else{
-    weightSection.style.display="none"
-    enableWeightButton.innerText="NO"
-    bgColor="black"
-    fontColor="springgreen"
-    networkController.setWeighted(false)
+  networkController.setMode(null)
+  switchStyleChange(enableWeightButton)
+  networkController.switchWeighted()
+})
+enableBipartitionButton.addEventListener("click",()=>{
+  networkController.setMode(null)
+  try{
+    networkController.switchBipartition()
+    switchStyleChange(enableBipartitionButton)
+  }catch(GraphIsNotBipartite){
+    alert(GraphIsNotBipartite)
   }
-  enableWeightButton.style.setProperty("--bgColor",bgColor)
-  enableWeightButton.style.setProperty("--fontColor",fontColor)
 })
 addButton.addEventListener("click",()=>{
   networkController.setMode("none")
@@ -122,3 +110,115 @@ showOutNetButton.addEventListener("click",()=>{
     ouputDescription.style.display="none"
   }
 })
+completeNetButton.addEventListener("click",async()=>{
+  networkController.completeNetwork()
+})
+
+loadNet.addEventListener("click",async () => {
+  let overlay = document.querySelector("#overlay") as HTMLDivElement;
+  let saveOver = document.querySelector("#saveOverlay") as HTMLFieldSetElement; 
+  let loadOver = document.querySelector("#loadOverlay") as HTMLFieldSetElement; 
+  let storedNet = document.querySelector("#storedNets") as HTMLSelectElement;
+  storedNet.replaceChildren()
+  let storedNetworks = await storageController.getAllNetworks()
+  for(const network of storedNetworks){
+    let option = document.createElement("option")
+    option.value =JSON.stringify(network)
+    option.innerText = network.nome
+    storedNet.appendChild(option)
+  }
+  overlay.style.display = "inline"
+  saveOver.style.display = "none"
+  loadOver.style.display = "flex"
+  s1.innerText="Carica"
+  s1.removeEventListener("click",saveNetwork)
+  s1.addEventListener("click",loadNetwork)
+})
+saveNet.addEventListener("click",async () => {
+  let overlay = document.querySelector("#overlay") as HTMLDivElement;
+  let saveOver = document.querySelector("#saveOverlay") as HTMLFieldSetElement; 
+  let loadOver = document.querySelector("#loadOverlay") as HTMLFieldSetElement; 
+  overlay.style.display = "inline"
+  saveOver.style.display = "flex"
+  loadOver.style.display = "none"
+  s1.innerText="Salva"
+  s1.removeEventListener("click",loadNetwork)
+  s1.addEventListener("click",saveNetwork)
+})
+r1.addEventListener("click",removeOverlay)
+
+async function switchStyleChange(node:HTMLElement){
+  let bgColor = node.style.getPropertyValue("--bgColor");
+  let fontColor = node.style.getPropertyValue("--fontColor");
+  if(node.innerText === "NO"){
+    node.innerText="SI"
+    bgColor="springgreen"
+    fontColor="black"
+  }else{
+    node.innerText="NO"
+    bgColor="black"
+    fontColor="springgreen"
+  }
+  node.style.setProperty("--bgColor",bgColor)
+  node.style.setProperty("--fontColor",fontColor)
+}
+
+async function removeOverlay(){
+  let overlay = document.querySelector("#overlay") as HTMLDivElement;
+  overlay.style.display = "none"
+}
+async function loadNetwork(){
+  let storedNet = document.querySelector("#storedNets") as HTMLSelectElement;
+  let value = storedNet.value
+  if(!value)
+    return
+  let informations = JSON.parse(value)
+  networkController.loadNetwork(informations)
+  if(informations.info.isWeighted){
+    if(enableWeightButton.innerText == "NO"){
+      enableWeightButton.click()
+    }
+  }
+  else{
+    if(enableWeightButton.innerText == "SI"){
+      enableWeightButton.click()
+    }
+  }
+  if(informations.info.isDirected){
+    if(enableDirectionButton.innerText == "NO"){
+      enableDirectionButton.click()
+    }
+  }
+  else{
+    if(enableDirectionButton.innerText == "SI"){
+      enableDirectionButton.click()
+    }
+  }
+  if(informations.info.isBipartite){
+    if(enableBipartitionButton.innerText == "NO"){
+      enableBipartitionButton.click()
+    }
+  }
+  else{
+    if(enableBipartitionButton.innerText == "SI"){
+      enableBipartitionButton.click()
+    }
+  }
+  let text = document.querySelector("#nomeGrafo") as HTMLInputElement;
+  text.value = informations.nome
+  removeOverlay()
+}
+async function saveNetwork(){
+  let text = document.querySelector("#nomeGrafo") as HTMLInputElement;
+  let networkInformations = await networkController.saveNetwork()
+  try{
+    await storageController.addNetwork({nome:text.value,info:networkInformations.info,data:networkInformations.data})
+  }catch(KeyAlreadyExists){
+    let result = confirm("Esiste già un elemento con questo nome, sovrascrivere l'elemento?")
+    if(result)
+      await storageController.updateNetwork({nome:text.value,info:networkInformations.info,data:networkInformations.data})
+    else
+      return
+  }
+  removeOverlay()
+}

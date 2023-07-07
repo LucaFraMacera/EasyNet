@@ -107,13 +107,13 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
     printGraph(){
         console.log(this.adiacencyList)
     }
-     isConnected():boolean{
-         for(const v of this.adiacencyList.keys()){
-             let depthSearch = this.bfs(v).length
-             if(depthSearch === this.adiacencyList.size)
-                 return true
-         }
-         return false
+    isConnected():boolean{
+        for(const v of this.adiacencyList.keys()){
+            let depthSearch = this.bfs(v).length
+            if(depthSearch === this.adiacencyList.size)
+                return true
+        }
+        return false
     }
    /*private hasNegativeEdges():boolean{
         for(const v of this.adiacencyList.keys()){
@@ -198,6 +198,15 @@ export class DirectedWeightedGraph<Vertex> implements IWeightedGraph<Vertex>{
         }
         return matrix
     }
+    public isBipartite(getAssignedColors:boolean):boolean|Map<Vertex,string>{
+        let indirectedVersion = new UndirectedWeightedGraph<Vertex>()
+        for(const node of this.adiacencyList.keys())
+            indirectedVersion.addVertex(node)
+        for(const node of this.adiacencyList.keys())
+            for(const entries of this.adiacencyList.get(node).entries())
+                indirectedVersion.addEdge(node,entries[0],entries[1])
+        return indirectedVersion.isBipartite(getAssignedColors)
+    }
     private getAdiacencyMatrix():number[][]{
         var matrix = Array.from(Array(this.adiacencyList.size), ()=>Array(this.adiacencyList.size).fill(0));
         let i =0
@@ -280,9 +289,50 @@ export class UndirectedWeightedGraph<Vertex> extends DirectedWeightedGraph<Verte
                 }      
             }
         }
-        console.log(mappedEdges)
         return queue
-    }/**
+    }
+    /**
+     * 
+     * @param getAssignedColors If set, the method returns the coloration of the nodes
+     * @returns Checks if the current network can be 2-colored. If it is, then the network is bipartite
+     */
+     public isBipartite(getAssignedColors?:boolean):boolean|Map<Vertex,string>{
+        if(!this.isConnected())
+            return false
+        let colors = ["BIANCO","NERO"]
+        let assignedColors = new Map<Vertex,string>()
+        let queue:Vertex[] = []
+        let startingNode = null
+        for(const node of this.adiacencyList.keys()){
+            if(!startingNode){
+                assignedColors.set(node,colors[0])
+                startingNode = node
+            }else{
+                assignedColors.set(node,null)
+            }
+        }
+        queue.push(startingNode)
+        while(queue.length != 0){
+            let node = queue.shift()!
+            let assignedColor = assignedColors.get(node)
+            for(const neighbour of this.adiacencyList.get(node).keys()){
+                let neighbourColor = assignedColors.get(neighbour)
+                if(!neighbourColor){
+                    let colorToAssign = assignedColor===colors[0] ? colors[1] : colors[0]
+                    assignedColors.set(neighbour,colorToAssign)
+                    queue.push(neighbour)
+                }
+                else if(neighbourColor === assignedColor){
+                    return false
+                }
+            }
+        }
+        if(getAssignedColors)
+            return assignedColors
+        return true
+    }
+    
+    /**
      * 
      * @param source Nodo sorgente da cui far partire l'albero ricoprente.
      * @returns Minimo albero ricoprente del grafo corrente.
@@ -330,25 +380,37 @@ export class UndirectedWeightedGraph<Vertex> extends DirectedWeightedGraph<Verte
     }
     kruskal():UndirectedWeightedGraph<Vertex>{
         let result = new UndirectedWeightedGraph<Vertex>()
+        let unionFind = new Map<Vertex,Vertex[]>
         let edges = this.getAllEdges()
         let numberOfEdges = 0
         if(!this.isConnected())
             return result
-        while(!edges.isEmpty()){
+        for(const v of this.adiacencyList.keys()){
+            result.addVertex(v)
+            unionFind.set(v,[v])
+        }
+        while(numberOfEdges != this.adiacencyList.size-1){
             let edgeInfo = edges.extractMinimum()
             let from = edgeInfo!.value!.from
             let to = edgeInfo!.value!.to
-            console.log(from,to,numberOfEdges)
-            if(result.hasVertex(from) && result.hasVertex(to))
-                continue
-            if(!result.hasVertex(from))
-                result.addVertex(from)
-            if(!result.hasVertex(to))
-                result.addVertex(to)
+            let group1 = unionFind.get(from)
+            let group2 = unionFind.get(to)
+            if(group1[0]==group2[0]){
+                continue // The edge creates a cycle
+            }
             result.addEdge(from,to,edgeInfo!.key)
             numberOfEdges++
+            if(group1.length > group2.length){
+                group1 = group1.concat(group2)
+                for(const v of group1)
+                    unionFind.set(v,group1)
+            }
+            else{
+                group2 = group2.concat(group1)
+                for(const v of group2)
+                    unionFind.set(v,group2)
+            }
         } 
-        console.log(result)
         return result
     }
     public toVisNetwork():{nodes:DataSet<any>,edges:DataSet<any>}{

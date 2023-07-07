@@ -4,4 +4,5 @@ export interface IGraph<Vertex>{
     addEdge(from:Vertex,to:Vertex):void
     removeVertex(vertex:Vertex):boolean
     removeEdge(from:Vertex,to:Vertex):boolean
+    isBipartite(getAssignedColors:boolean):boolean|Map<Vertex,string>
 }

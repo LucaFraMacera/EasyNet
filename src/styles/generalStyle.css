@@ -14,7 +14,7 @@ body{
 }
 
 h1{
-  text-align: center;
+  text-align: left;
   font-size: 45px;
   font-weight: bold;
   font-style: oblique;
@@ -29,6 +29,15 @@ input[type="number"]{
   color:springgreen;
   font-weight: bold;
   font-size: 20px;  
+  border:3px solid springgreen;
+}
+input[type="text"]{
+  border-radius: 15px;
+  text-align: left;
+  background-color: transparent;
+  color:springgreen;
+  font-weight: bold;
+  font-size: 14px;  
   border:3px solid springgreen;
 }
 fieldset{
